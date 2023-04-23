@@ -1,0 +1,11 @@
+.navLink {
+    color: white;
+    text-decoration: none;
+    margin-left: 1rem;
+    font-weight: bold;
+  }
+  
+  .navLink:hover {
+    text-decoration: underline;
+  }
+  
