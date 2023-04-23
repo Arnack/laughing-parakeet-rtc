@@ -26,6 +26,7 @@ import {
     ListItem,
     IconButton,
     Container,
+    Collapse,
   } from "@chakra-ui/react";
   import { DeleteIcon } from "@chakra-ui/icons";
 import localForage from "localforage";
@@ -41,6 +42,13 @@ const Test = () => {
   const [temperature, setTemperature] = useState(0.9);
   const [history, setHistory] = useState<IMessage[]>([]);
   const [loading, setLoading] = useState(false);
+  const [showContent, setShowContent] = useState<Array<boolean>>([]);
+
+  const toggleContent = (index: number) => {
+    const newShowContent = [...showContent];
+    newShowContent[index] = !newShowContent[index];
+    setShowContent(newShowContent);
+  };
 
    // Используйте useDisclosure для управления видимостью модального окна
    const { isOpen, onOpen, onClose } = useDisclosure();
@@ -148,6 +156,7 @@ const Test = () => {
     const handleStreamingChatCompletion = async () => {
         setLoading(true);
         setResponse("");
+        let stringResponse = "";
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
           method: "POST",
           headers: {
@@ -188,6 +197,7 @@ const Test = () => {
                 const usefulContent = parsedData?.choices[0]?.delta?.content;
 
                 setResponse((prev) => prev + usefulContent);
+                stringResponse += usefulContent;
 
               } catch (error) {
                 console.error("Error parsing JSON data:", error);
@@ -196,7 +206,10 @@ const Test = () => {
                 const contentMatch = contentRegex.exec(completeJsonData);
                 if (contentMatch) {
                     const usefulContent = contentMatch[1];
+                    console.log("usefulContent>>>", usefulContent);
+                    
                     setResponse((prev) => prev + usefulContent);
+                    stringResponse += usefulContent;
                 } else {
                     console.error("Unable to extract content using regex");
                 }
@@ -206,6 +219,7 @@ const Test = () => {
         }
       
         setLoading(false);
+        saveToHistory({ message, response: stringResponse });
       };
       
       
@@ -245,6 +259,7 @@ const Test = () => {
                         </SliderTrack>
                         <SliderThumb />
                     </Slider>
+                    <span>{temperature}</span>
                 </VStack>
             </HStack>
 
@@ -252,14 +267,14 @@ const Test = () => {
           <VStack spacing={4}>
             <HStack spacing={4}>
               <Button isDisabled={loading} onClick={handleSentMessegeToOpenAI}>Send to Davinci</Button>
-              <Button isDisabled={loading} onClick={handleSentMessageToChatGPT}>Send to ChatGPT</Button>
-              <Button isDisabled={loading} onClick={handleStreamingChatCompletion}>Send with Streaming</Button>
+              {/* <Button isDisabled={loading} onClick={handleSentMessageToChatGPT}>Send to ChatGPT</Button> */}
+              <Button isDisabled={loading} onClick={handleStreamingChatCompletion}>Ask ChatGPT</Button>
 
               {/* <Button onClick={handleSentMessageToChatGPT4} disabled={true}>Send to ChatGPT4</Button> */}
             </HStack>
             <Box borderTop="1px solid" borderColor="gray.300" pt={4} width="100%">
               <Text
-                style={{ maxHeight: "200px", overflow: "auto" }}
+                style={{ maxHeight: "300px", overflow: "auto" }}
               >
                 {response}
                 </Text>
@@ -278,12 +293,20 @@ const Test = () => {
                     <ModalHeader>История запросов</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                    <UnorderedList spacing={3}>
+                    <UnorderedList spacing={4}>
                         {history.map((item, index) => (
-                        <ListItem key={index}>
-                            <Box fontWeight="bold">Запрос:</Box>
-                            <Box>
-                                {item.message} 
+                        <ListItem key={"hist" + index}>
+                            <Box fontWeight="bold"
+                                style={{ display: showContent[index] ? "block" : "none", cursor: "pointer" }}
+                                onClick={() => toggleContent(index)}
+                            >
+                                Запрос:
+                            </Box>
+                            <Box
+                                onClick={() => toggleContent(index)}
+                                style={{ cursor: "pointer" }}
+                            >
+                                <Text>{item.message} </Text>
                                 <IconButton
                                     aria-label="Удалить из истории"
                                     icon={<DeleteIcon />}
@@ -292,11 +315,14 @@ const Test = () => {
                                     style={{ float: "right" }}
                                     size="xs"
                                     ml={2}
+                                    mt={-6}
                                 />
                             </Box>
                             
-                            <Box fontWeight="bold">Ответ:</Box>
-                            {item.response}
+                            <Collapse in={showContent[index]}>
+                                <Box fontWeight="bold">Ответ:</Box>
+                                <Text>{item.response}</Text>
+                            </Collapse>
                             
                         </ListItem>
                         ))}
