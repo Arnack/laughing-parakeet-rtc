@@ -30,11 +30,16 @@ import {
   import { DeleteIcon } from "@chakra-ui/icons";
 import localForage from "localforage";
 
+interface IMessage {
+    message: string;
+    response: any;
+};
+
 const Test = () => {
   const [message, setMessage] = useState("");
   const [response, setResponse] = useState("");
   const [temperature, setTemperature] = useState(0.9);
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<IMessage[]>([]);
   const [loading, setLoading] = useState(false);
 
    // Используйте useDisclosure для управления видимостью модального окна
@@ -42,7 +47,7 @@ const Test = () => {
 
   useEffect(() => {
     async function loadHistory() {
-      const storedHistory = await localForage.getItem("history");
+      const storedHistory: any = await localForage.getItem("history");
       if (storedHistory) {
         setHistory(storedHistory);
       }
@@ -51,13 +56,13 @@ const Test = () => {
     loadHistory();
   }, []);
 
-  const saveToHistory = async (item) => {
+  const saveToHistory = async (item: { message: string; response: any; }) => {
     const newHistory = [...history, item];
     await localForage.setItem("history", newHistory);
     setHistory(newHistory);
   };
 
-  const removeFromHistory = async (index) => {
+  const removeFromHistory = async (index: number) => {
     const updatedHistory = [...history];
     updatedHistory.splice(index, 1);
     setHistory(updatedHistory);
@@ -157,12 +162,13 @@ const Test = () => {
           }),
         });
       
-        const reader = response.body.getReader();
+        const reader = response?.body?.getReader();
         const decoder = new TextDecoder("utf-8");
       
         let jsonBuffer = "";
         while (true) {
-          const { value, done } = await reader.read();
+          // @ts-ignore
+          const { value, done } = await reader?.read();
           if (done) {
             break;
           }
