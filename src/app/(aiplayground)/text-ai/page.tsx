@@ -251,15 +251,15 @@ const Test = () => {
                         value={temperature}
                         onChange={(val) => setTemperature(val)}
                         size="md"
-                        height={16}
-                        mt={-4}
+                        height={18}
+                        mt={-6}
                     >
                         <SliderTrack>
                         <SliderFilledTrack />
                         </SliderTrack>
                         <SliderThumb />
                     </Slider>
-                    <span>{temperature}</span>
+                    <span style={{width: '25px'}}>{temperature}</span>
                 </VStack>
             </HStack>
 
@@ -310,7 +310,10 @@ const Test = () => {
                                 <IconButton
                                     aria-label="Удалить из истории"
                                     icon={<DeleteIcon />}
-                                    onClick={() => removeFromHistory(index)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeFromHistory(index);
+                                    }}
                                     variant="ghost"
                                     style={{ float: "right" }}
                                     size="xs"
