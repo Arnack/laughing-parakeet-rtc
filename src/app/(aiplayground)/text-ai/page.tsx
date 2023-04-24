@@ -1,11 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
+import db from "@/service/firebase/firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
 import {
   Box,
   Heading,
   Button,
-  Input,
   Text,
   VStack,
   HStack,
@@ -64,11 +65,22 @@ const Test = () => {
     loadHistory();
   }, []);
 
+  async function saveToFirebase(item: any) {
+    try {
+      const historyRef = collection(db, "history");
+      const docRef = await addDoc(historyRef, item);
+    } catch (error) {
+      console.error("Error adding document to Firebase:", error);
+    }
+  }
+  
+
   const saveToHistory = async (item: { message: string; response: any; }) => {
     const newHistory = [...history, item];
     await localForage.setItem("history", newHistory);
     setHistory(newHistory);
   };
+
 
   const removeFromHistory = async (index: number) => {
     const updatedHistory = [...history];
@@ -97,12 +109,13 @@ const Test = () => {
             }),
         });
         const data = await response.json();
-        console.log('data>>>>', data);
         setResponse(data?.choices[0]?.text);
         setLoading(false);
 
         // сохранение запроса в истории
-        saveToHistory({ message, response: data?.choices[0]?.text });
+        const newItem = { message, response: data?.choices[0]?.text };
+        saveToHistory(newItem);
+        saveToFirebase(newItem);
     };
 
 
@@ -122,12 +135,12 @@ const Test = () => {
             }),
         });
         const data = await response.json();
-        console.log('data>>>>', data);
         setResponse(data?.choices[0]?.message?.content);
         setLoading(false);
 
-        // сохранение запроса в истории
-        saveToHistory({ message, response: data?.choices[0]?.message?.content });
+        const newItem = { message, response: data?.choices[0]?.text };
+        saveToHistory(newItem);
+        saveToFirebase(newItem);
     };
 
     const handleSentMessageToChatGPT4 = async () => {
@@ -145,7 +158,6 @@ const Test = () => {
             }),
         });
         const data = await response.json();
-        console.log('data>>>>', data);
         setResponse(data?.choices[0]?.message?.content);
 
 
@@ -206,7 +218,6 @@ const Test = () => {
                 const contentMatch = contentRegex.exec(completeJsonData);
                 if (contentMatch) {
                     const usefulContent = contentMatch[1];
-                    console.log("usefulContent>>>", usefulContent);
                     
                     setResponse((prev) => prev + usefulContent);
                     stringResponse += usefulContent;
@@ -220,6 +231,7 @@ const Test = () => {
       
         setLoading(false);
         saveToHistory({ message, response: stringResponse });
+        saveToFirebase({ message, response: stringResponse });
       };
       
       
