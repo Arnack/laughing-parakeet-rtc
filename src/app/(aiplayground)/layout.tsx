@@ -19,14 +19,15 @@ const AiPlaygroundLayout: FC<IProps> = ({ children }) => {
       <body>
         <ChakraProvider theme={theme} cssVarsRoot="body">
         <ColorModeScriptInjector />
-        <AuthProvider>
-          <Box>
-              <Navbar />
-              <Box pt={12} px={4}>
-                  {children}
-              </Box>
-          </Box>
-        </AuthProvider>
+          {/* @ts-ignore */}
+          <AuthProvider>
+            <Box>
+                <Navbar />
+                <Box pt={12} px={4}>
+                    {children}
+                </Box>
+            </Box>
+          </AuthProvider>
         </ChakraProvider>
         <Analytics />
       </body>
