@@ -66,6 +66,7 @@ const Test = () => {
   }, []);
 
   async function saveToFirebase(item: any) {
+
     try {
       const historyRef = collection(db, "history");
       const docRef = await addDoc(historyRef, item);
@@ -263,7 +264,7 @@ const Test = () => {
                         value={temperature}
                         onChange={(val) => setTemperature(val)}
                         size="md"
-                        height={18}
+                        height={16}
                         mt={-6}
                     >
                         <SliderTrack>

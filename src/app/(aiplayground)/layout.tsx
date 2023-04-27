@@ -7,6 +7,7 @@ import { Box } from "@chakra-ui/react";
 import theme from "../../service/helpers/theme";
 import ColorModeScriptInjector from "@/components/color-injector";
 import { Analytics } from '@vercel/analytics/react';
+import { AuthProvider } from "@/authContext";
 
 interface IProps {
     children: React.ReactNode
@@ -17,15 +18,15 @@ const AiPlaygroundLayout: FC<IProps> = ({ children }) => {
     <html lang="en">
       <body>
         <ChakraProvider theme={theme} cssVarsRoot="body">
-        {/* <CSSReset /> */}
-        {/* <ColorModeScript initialColorMode={theme.config.initialColorMode} /> */}
         <ColorModeScriptInjector />
-        <Box>
-            <Navbar />
-            <Box pt={12} px={4}>
-                {children}
-            </Box>
-        </Box>
+        <AuthProvider>
+          <Box>
+              <Navbar />
+              <Box pt={12} px={4}>
+                  {children}
+              </Box>
+          </Box>
+        </AuthProvider>
         </ChakraProvider>
         <Analytics />
       </body>
