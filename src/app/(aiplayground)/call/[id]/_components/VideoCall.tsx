@@ -31,11 +31,12 @@ const VideoCall = ({ callId }: VideoCallProps) => {
 
     // Create a new Peer
     peerRef.current = new Peer(user.uid, {
-      host: 'peerjs-server.herokuapp.com',
+      host: 'http://ec2-34-227-149-124.compute-1.amazonaws.com:8888',
       secure: true,
       config: {
         iceServers: [
           { url: 'stun:stun1.l.google.com:19302' },
+          { url: 'stun:stun2.l.google.com:19302' },
           { url: 'turn:numb.viagenie.ca', credential: 'muazkh', username: 'webrtc@live.com' }
         ]
       }
