@@ -15,8 +15,9 @@ const VideoCall = ({ callId }: VideoCallProps) => {
   const { user } = useAuth();
   const [call, setCall] = useState(null);
   const [stream, setStream] = useState(null);
-  const videoRef = useRef(null);
-  const peerRef = useRef(null);
+  const localVideoRef = useRef<Peer | null | HTMLVideoElement>(null);
+  const remoteVideoRef = useRef<Peer | null | HTMLVideoElement>(null);
+  const peerRef = useRef<Peer | null | HTMLVideoElement>(null);
 
   // Handle joining and leaving a call
   useEffect(() => {
@@ -27,9 +28,8 @@ const VideoCall = ({ callId }: VideoCallProps) => {
     const db = realtimeDB;
     const callRef = ref(db, `calls/${callId}`);
     const userRef = ref(db, `calls/${callId}/users/${user.uid}`);
-  
+
     // Create a new Peer
-    // @ts-ignore
     peerRef.current = new Peer(user.uid, {
       host: 'peerjs-server.herokuapp.com',
       secure: true,
@@ -40,39 +40,36 @@ const VideoCall = ({ callId }: VideoCallProps) => {
         ]
       }
     });
-  
-    // @ts-ignore
+
     peerRef.current.on('open', () => {
       // Join the call
       set(userRef, true);
     });
-  
-    // @ts-ignore
+
     peerRef.current.on('call', (incomingCall) => {
-      incomingCall.answer(stream);
-  
-    // @ts-ignore
+      if (stream)
+        incomingCall.answer(stream);
+
       incomingCall.on('stream', (incomingStream) => {
-        if (videoRef.current) {
+        if (remoteVideoRef.current) {
           // @ts-ignore
-          videoRef.current.srcObject = incomingStream;
+          remoteVideoRef.current.srcObject = incomingStream;
         }
       });
     });
-  
+
     // Listen for changes in the call
     onValue(callRef, (snapshot) => {
       setCall(snapshot.val());
     });
-  
+
     return () => {
       // Leave the call and destroy the Peer
       remove(userRef);
       // @ts-ignore
-      peerRef.current.destroy();
+      peerRef?.current?.destroy();
     };
   }, [callId, user, stream]);
-  
 
   // Handle user video stream
   useEffect(() => {
@@ -81,16 +78,17 @@ const VideoCall = ({ callId }: VideoCallProps) => {
         // @ts-ignore
         setStream(stream);
         
-        if (videoRef.current) {
+        if (localVideoRef.current) {
+
           // @ts-ignore
-          videoRef.current.srcObject = stream;
+          localVideoRef.current.srcObject = stream;
         }
       })
       .catch(err => console.error(err));
     
     return () => {
       // @ts-ignore
-      stream.getTracks().forEach(track => track.stop());
+      stream?.getTracks()?.forEach(track => track.stop());
     };
   }, []);
 
@@ -105,11 +103,10 @@ const VideoCall = ({ callId }: VideoCallProps) => {
         // @ts-ignore
         const outgoingCall = peerRef.current.call(otherUserId, stream);
         
-    // @ts-ignore
-        outgoingCall.on('stream', (incomingStream) => {
-          if (videoRef.current) {
+        outgoingCall.on('stream', (incomingStream: any) => {
+          if (remoteVideoRef.current) {
             // @ts-ignore
-            videoRef.current.srcObject = incomingStream;
+            remoteVideoRef.current.srcObject = incomingStream;
           }
         });
       }
@@ -117,23 +114,32 @@ const VideoCall = ({ callId }: VideoCallProps) => {
   }, [call, user, stream]);
 
   if (!call) {
-    return <Text>Loading......</Text>;
+    return <div>
+      <Text>Loading...</Text>
+      {/* @ts-ignore */}
+      <video ref={localVideoRef} autoPlay playsInline muted />
+      </div>;
   }
 
-    // @ts-ignore
-  if (Object.keys(call.users).length >= 2 && !call.users[user.uid]) {
+  // @ts-ignore
+  if (Object.keys(call?.users).length >= 2 && !call.users[user.uid]) {
     return <Text>Call is already in progress</Text>;
   }
 
   return (
     <VStack>
-      <Text>%Call ID: {callId}</Text>
       <Box>
-        <video ref={videoRef} autoPlay playsInline />
+        <Text>Local Stream</Text>
+        {/* @ts-ignore */}
+        <video ref={localVideoRef} autoPlay playsInline muted />
+      </Box>
+      <Box>
+        <Text>Remote Stream</Text>
+        {/* @ts-ignore */}
+        <video ref={remoteVideoRef} autoPlay playsInline />
       </Box>
     </VStack>
   );
 };
 
 export default VideoCall;
-
