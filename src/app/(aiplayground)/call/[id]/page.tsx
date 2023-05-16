@@ -1,12 +1,14 @@
 'use client'
 
-import VideoCall from "@/components/call/VideoCall";
+import VideoCall from "./_components/VideoCall";
 import { Box } from "@chakra-ui/react";
 
 const CallPage = () => {
+
+  const callId = location.pathname.split("/")[2];
   return (
     <Box>
-      {/* <VideoCall /> */}
+      <VideoCall callId={callId} />
     </Box>
   );
 };

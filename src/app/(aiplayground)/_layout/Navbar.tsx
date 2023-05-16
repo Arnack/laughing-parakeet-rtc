@@ -26,13 +26,10 @@ const Navbar = () => {
   const { user } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  console.log("user>>>", user);
-  
-
   return (
     <Box bg="teal.400" width="100%" p={4} color="white">
       <Flex alignItems="center" justifyContent="space-between">
-        <Heading size="md">YourAppName</Heading>
+        <Heading size="md">Wisely</Heading>
         <Flex>
           <Link className={styles.navLink} href="/">
             Home
