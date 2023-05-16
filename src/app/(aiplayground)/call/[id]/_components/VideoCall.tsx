@@ -30,17 +30,21 @@ const VideoCall = ({ callId }: VideoCallProps) => {
     const userRef = ref(db, `calls/${callId}/users/${user.uid}`);
 
     // Create a new Peer
-    peerRef.current = new Peer(user.uid, {
-      host: 'http://ec2-34-227-149-124.compute-1.amazonaws.com:8888',
-      secure: true,
-      config: {
-        iceServers: [
-          { url: 'stun:stun1.l.google.com:19302' },
-          { url: 'stun:stun2.l.google.com:19302' },
-          { url: 'turn:numb.viagenie.ca', credential: 'muazkh', username: 'webrtc@live.com' }
-        ]
-      }
-    });
+    peerRef.current = new Peer(user.uid, {config: {
+      host: '0.peerjs.com',
+      'iceServers': [
+          {
+              urls: [
+                  'stun:stun1.l.google.com:19302',
+                  'stun:stun2.l.google.com:19302',
+                  'stun:stun.services.mozilla.com'
+              ],
+          },
+          // { urls: 'turn:numb.viagenie.ca','credential': 'hmprettyplease','username': 'gri-go-riy@mail.ru' }
+      ],
+      iceCandidatePoolSize: 10,
+  }}
+    );
 
     peerRef.current.on('open', () => {
       // Join the call
