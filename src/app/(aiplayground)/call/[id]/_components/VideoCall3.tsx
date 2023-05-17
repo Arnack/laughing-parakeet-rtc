@@ -2,10 +2,10 @@
 
 import { useEffect, useRef } from 'react';
 import Peer from 'peerjs';
-import { useAuth } from "@/authContext";
 
 interface VideoCallProps {
   callId: string;
+  user: any;
 }
 
 const config1 = {
@@ -15,11 +15,9 @@ const config1 = {
     pingInterval: 5000,
   }
 
-const VideoCall = ({ callId }: VideoCallProps) => {
+const VideoCall = ({ user, callId }: VideoCallProps) => {
   const myVideo = useRef<HTMLVideoElement | null>(null);
   const peerVideo = useRef<HTMLVideoElement | null>(null);
-  
-  const { user } = useAuth();
 
   const isInitiator = user?.uid === callId;
 
@@ -54,7 +52,6 @@ const VideoCall = ({ callId }: VideoCallProps) => {
         });
       });
 
-      //???????
       peer.on('call', (call) => {
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
         .then((stream) => {
