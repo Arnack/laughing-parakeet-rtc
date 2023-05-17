@@ -26,7 +26,7 @@ const VideoCall = ({ callId }: VideoCallProps) => {
   useEffect(() => {
     const peer = new Peer(user?.uid as string, config1);
 
-    if (!isInitiator) {
+    // if (!isInitiator) {
       const conn = peer.connect(callId);
       conn.on("open", () => {
         conn.send("Hello World!");
@@ -34,10 +34,10 @@ const VideoCall = ({ callId }: VideoCallProps) => {
       conn.on("data", (data) => {
         console.log("Received data>>>>", data);
       });
-    }
+    // }
   
 
-    if (isInitiator) {
+    if (!isInitiator) {
       navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((stream) => {
         if (myVideo.current) {
@@ -52,10 +52,7 @@ const VideoCall = ({ callId }: VideoCallProps) => {
             peerVideo.current.srcObject = remoteStream;
           }
         });
-
-
       });
-
 
       //???????
       peer.on('call', (call) => {
