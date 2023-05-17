@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import Peer from 'peerjs';
-import { auth } from '@/service/firebase/firebaseConfig';
+import { useAuth } from "@/authContext";
 
 interface VideoCallProps {
   callId: string;
@@ -11,9 +11,8 @@ interface VideoCallProps {
 const VideoCall = ({ callId }: VideoCallProps) => {
   const myVideo = useRef<HTMLVideoElement | null>(null);
   const peerVideo = useRef<HTMLVideoElement | null>(null);
-
-  console.log('auth>>>', auth);
   
+  const { user } = useAuth();
 
   useEffect(() => {
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -22,7 +21,7 @@ const VideoCall = ({ callId }: VideoCallProps) => {
         myVideo.current.srcObject = stream;
       }
 
-      const peer = new Peer(auth.currentUser?.uid as string);
+      const peer = new Peer(user?.uid as string);
 
       peer.on('error', (err) => {
         console.error(`Error connecting to Peer.js: ${err}`);
@@ -49,7 +48,7 @@ const VideoCall = ({ callId }: VideoCallProps) => {
         });
       });
 
-      if (callId !== auth.currentUser?.uid) {
+      if (callId !== user?.uid) {
         const call = peer.call(callId, stream);
 
         call.on('stream', (remoteStream) => {
