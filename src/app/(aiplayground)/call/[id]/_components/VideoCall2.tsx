@@ -9,7 +9,7 @@ interface VideoCallProps {
 }
 
 const configuration = {
-    host: 'http://ec2-34-227-149-124.compute-1.amazonaws.com:8888',
+    // host: 'http://ec2-34-227-149-124.compute-1.amazonaws.com:8888',
     'iceServers': [
         {
             urls: [
@@ -41,7 +41,7 @@ const VideoCall = ({ callId }: VideoCallProps) => {
         myVideo.current.srcObject = stream;
       }
 
-      const peer = new Peer(user?.uid as string, {debug: 3, config: configuration});
+      const peer = new Peer(user?.uid as string);
 
       peer.on('error', (err) => {
         console.error(`Error connecting to Peer.js>>>: ${err}`);

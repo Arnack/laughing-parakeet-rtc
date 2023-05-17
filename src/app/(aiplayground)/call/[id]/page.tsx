@@ -1,6 +1,6 @@
 'use client'
 
-import VideoCall from "./_components/VideoCall2";
+import VideoCall from "./_components/VideoCall3";
 import { Box } from "@chakra-ui/react";
 
 const CallPage = () => {
