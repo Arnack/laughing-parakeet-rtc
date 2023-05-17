@@ -279,9 +279,9 @@ const Test = () => {
 
           <VStack spacing={4}>
             <HStack spacing={4}>
-              <Button isDisabled={loading} onClick={handleSentMessegeToOpenAI}>Send to Davinci</Button>
+              {/* <Button isDisabled={loading} onClick={handleSentMessegeToOpenAI}>Send to Davinci</Button> */}
               {/* <Button isDisabled={loading} onClick={handleSentMessageToChatGPT}>Send to ChatGPT</Button> */}
-              <Button isDisabled={loading} onClick={handleStreamingChatCompletion}>Ask ChatGPT</Button>
+              {/* <Button isDisabled={loading} onClick={handleStreamingChatCompletion}>Ask ChatGPT</Button> */}
 
               {/* <Button onClick={handleSentMessageToChatGPT4} disabled={true}>Send to ChatGPT4</Button> */}
             </HStack>

@@ -41,10 +41,12 @@ const VideoCall = ({ callId }: VideoCallProps) => {
               ],
           },
           // { urls: 'turn:numb.viagenie.ca','credential': 'hmprettyplease','username': 'gri-go-riy@mail.ru' }
-      ],
-      iceCandidatePoolSize: 10,
-  }}
+        ],
+      }}
     );
+
+    console.log('peerRef.current>>>');
+    
 
     peerRef.current.on('open', () => {
       // Join the call
@@ -55,17 +57,24 @@ const VideoCall = ({ callId }: VideoCallProps) => {
       if (stream)
         incomingCall.answer(stream);
 
+      console.log('call>>>');
+      
+
       incomingCall.on('stream', (incomingStream) => {
         if (remoteVideoRef.current) {
           // @ts-ignore
           remoteVideoRef.current.srcObject = incomingStream;
         }
       });
+
+      console.log('stream>>>');
+      
     });
 
     // Listen for changes in the call
     onValue(callRef, (snapshot) => {
       setCall(snapshot.val());
+      console.log('snapshot.val()>>>', snapshot.val());
     });
 
     return () => {
@@ -73,6 +82,9 @@ const VideoCall = ({ callId }: VideoCallProps) => {
       remove(userRef);
       // @ts-ignore
       peerRef?.current?.destroy();
+
+      console.log('destroy>>>');
+      
     };
   }, [callId, user, stream]);
 
@@ -99,6 +111,11 @@ const VideoCall = ({ callId }: VideoCallProps) => {
 
   // Handle call initiation
   useEffect(() => {
+
+    console.log('call>>>', call);
+    console.log('stream>>>', stream);
+    
+
     // @ts-ignore
     if (call && Object.keys(call.users).length === 2) {
       // @ts-ignore
