@@ -8,9 +8,29 @@ interface VideoCallProps {
   callId: string;
 }
 
+const configuration = {
+    host: 'http://ec2-34-227-149-124.compute-1.amazonaws.com:8888',
+    'iceServers': [
+        {
+            urls: [
+                'stun:stun1.l.google.com:19302',
+                'stun:stun2.l.google.com:19302',
+                'stun:stun.services.mozilla.com'
+            ],
+        },
+        // { urls: 'turn:numb.viagenie.ca','credential': 'hmprettyplease','username': 'gri-go-riy@mail.ru' }
+    ],
+    debug: 3,
+    iceCandidatePoolSize: 10,
+}
+
 const VideoCall = ({ callId }: VideoCallProps) => {
   const myVideo = useRef<HTMLVideoElement | null>(null);
   const peerVideo = useRef<HTMLVideoElement | null>(null);
+  
+  console.log('callId>>>', callId);
+
+  let peerId = '';
   
   const { user } = useAuth();
 
@@ -21,27 +41,34 @@ const VideoCall = ({ callId }: VideoCallProps) => {
         myVideo.current.srcObject = stream;
       }
 
-      const peer = new Peer(user?.uid as string);
+      const peer = new Peer(user?.uid as string, {debug: 3, config: configuration});
 
       peer.on('error', (err) => {
-        console.error(`Error connecting to Peer.js: ${err}`);
+        console.error(`Error connecting to Peer.js>>>: ${err}`);
       });
 
       peer.on('open', () => {
-        console.log(`Connected to Peer.js server with id ${peer.id}`);
+        console.log(`Connected to Peer.js server with id>>> ${peer.id}`);
+        peerId = peer.id;
       });
 
       peer.on('call', (call) => {
+
+        console.log('on call>>>', call);
+
         call.answer(stream);
 
+        console.log('call.answer>>>');
+
         call.on('stream', (remoteStream) => {
+          console.log('on stream | remoteStream>>>', remoteStream);
           if (peerVideo.current) {
             peerVideo.current.srcObject = remoteStream;
           }
         });
 
         call.on('close', () => {
-          console.log('Call closed');
+          console.log('Call closed>>>');
           if (peerVideo.current) {
             peerVideo.current.srcObject = null;
           }
@@ -49,16 +76,24 @@ const VideoCall = ({ callId }: VideoCallProps) => {
       });
 
       if (callId !== user?.uid) {
+        console.log('calling>>>', peer.id, 'callId>>>', callId);
+        
         const call = peer.call(callId, stream);
+        // const call = peer.call(peerId, stream);
+
+        console.log('call>>>', call);
+        
 
         call.on('stream', (remoteStream) => {
+          console.log('on stream | remoteStream>>>', remoteStream);
+          
           if (peerVideo.current) {
             peerVideo.current.srcObject = remoteStream;
           }
         });
 
         call.on('close', () => {
-          console.log('Call closed');
+          console.log('Call closed>>>>');
           if (peerVideo.current) {
             peerVideo.current.srcObject = null;
           }
@@ -66,7 +101,7 @@ const VideoCall = ({ callId }: VideoCallProps) => {
       }
     })
     .catch((err) => {
-      console.error(`Error getting user media: ${err}`);
+      console.error(`Error getting user media:>>>> ${err}`);
     });
 
     // cleanup function
@@ -83,8 +118,8 @@ const VideoCall = ({ callId }: VideoCallProps) => {
 
   return (
     <div>
-      <video ref={myVideo} autoPlay />
-      <video ref={peerVideo} autoPlay />
+      <video ref={myVideo} autoPlay muted/>
+      <video ref={peerVideo} autoPlay muted/>
     </div>
   );
 };
