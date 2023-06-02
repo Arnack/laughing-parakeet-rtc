@@ -6,12 +6,9 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-
+    <main className={styles.main + " " + inter.className}>
       <div className={styles.center}>
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
+        <h1>We're currently under maintenance</h1>
       </div>
     </main>
   )

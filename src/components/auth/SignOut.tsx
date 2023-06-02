@@ -1,6 +1,7 @@
 import { auth } from "@/service/firebase/firebaseConfig";
-import { Button } from "@chakra-ui/react";
 import { signOut } from "firebase/auth";
+import { Icon } from '@chakra-ui/react'
+import { MdLogout } from 'react-icons/md'
 
 const SignOut = () => {
   const handleSignOut = async () => {
@@ -12,9 +13,14 @@ const SignOut = () => {
   };
 
   return (
-    <Button colorScheme="red" onClick={handleSignOut}>
-      Sign Out
-    </Button>
+    <Icon
+      onClick={handleSignOut}
+      as={MdLogout}
+      // w={6}
+      h={6}
+      cursor="pointer"
+      style={{ marginLeft: "8px" }}
+    />
   );
 };
 

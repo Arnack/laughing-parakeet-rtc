@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import styles from './VideoCall3.module.scss';
 import Peer from 'peerjs';
 
 interface VideoCallProps {
@@ -19,22 +20,13 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
   const myVideo = useRef<HTMLVideoElement | null>(null);
   const peerVideo = useRef<HTMLVideoElement | null>(null);
 
+  const [videoOrder, setVideoOrder] = useState<boolean>(true);
+
   const isInitiator = user?.uid === callId;
 
   useEffect(() => {
     const peer = new Peer(user?.uid as string, config1);
-
-    // if (!isInitiator) {
-      const conn = peer.connect(callId);
-      conn.on("open", () => {
-        conn.send("Hello World!");
-      });
-      conn.on("data", (data) => {
-        console.log("Received data>>>>", data);
-      });
-    // }
   
-
     if (!isInitiator) {
       navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then((stream) => {
@@ -48,6 +40,13 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
           console.log('on stream | remoteStream>>>', remoteStream);
           if (peerVideo.current) {
             peerVideo.current.srcObject = remoteStream;
+          }
+        });
+
+        call.on('close', () => {
+          console.log('Call closed>>>');
+          if (peerVideo.current) {
+            peerVideo.current.srcObject = null;
           }
         });
       });
@@ -65,6 +64,13 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
               peerVideo.current.srcObject = remoteStream;
             }
           });
+
+          call.on('close', () => {
+            console.log('Call closed>>>');
+            if (peerVideo.current) {
+              peerVideo.current.srcObject = null;
+            }
+          });
         });
       });
     }
@@ -72,9 +78,21 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
   }, []);
  
   return (
-    <div>
-      <video ref={myVideo} autoPlay muted/>
-      <video ref={peerVideo} autoPlay muted/>
+    <div className={styles.videocallContainer}>
+      <video
+        className={videoOrder ? styles.smallVideo : styles.largeVideo}
+        onClick={() => setVideoOrder(!videoOrder)}
+        ref={myVideo}
+        autoPlay
+        muted
+      />
+      <video
+        className={videoOrder ? styles.largeVideo : styles.smallVideo}
+        onClick={() => setVideoOrder(!videoOrder)}
+        ref={peerVideo}
+        autoPlay
+        muted
+      />
     </div>
   );
 };

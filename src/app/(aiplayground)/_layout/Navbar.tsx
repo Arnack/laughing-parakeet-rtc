@@ -17,6 +17,8 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
+import { Icon } from '@chakra-ui/react'
+import { MdLogin } from 'react-icons/md'
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import SignUp from "@/components/auth/SignUp";
 
@@ -53,9 +55,14 @@ const Navbar = () => {
           {user ? (
             <SignOut />
           ) : (
-            <Button colorScheme="whiteAlpha" onClick={onOpen}>
-              Sign In
-            </Button>
+            
+            <Icon
+              onClick={onOpen}
+              as={MdLogin}
+              h={6}
+              cursor="pointer"
+              style={{ marginLeft: "8px" }}
+            />
           )}
         </Flex>
       </Flex>
