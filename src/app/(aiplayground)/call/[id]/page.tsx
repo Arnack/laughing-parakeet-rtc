@@ -1,7 +1,7 @@
 'use client'
 
-import VideoCall from "./_components/VideoCall3";
-// import VideoCall from "./_components/VideoCall4";
+// import VideoCall from "./_components/VideoCall3";
+import VideoCall from "./_components/VideoCall4";
 import { Box } from "@chakra-ui/react";
 import { useAuth } from "@/authContext";
 
