@@ -70,7 +70,6 @@ const Navbar = () => {
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>Sign In</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <Tabs>
@@ -88,12 +87,6 @@ const Navbar = () => {
                 </TabPanels>
               </Tabs>
             </ModalBody>
-
-            <ModalFooter justifyContent="center">
-              <Button colorScheme="blue" onClick={onClose}>
-                Close
-              </Button>
-            </ModalFooter>
           </ModalContent>
         </Modal>
       )}
