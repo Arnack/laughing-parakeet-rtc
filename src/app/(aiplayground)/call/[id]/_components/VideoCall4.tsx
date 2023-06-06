@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState, useRef } from 'react';
-import Peer, { PeerJSOption } from 'peerjs';
-import { Box, IconButton, Stack } from '@chakra-ui/react';
-import { IoCall, IoMicOff, IoMic, IoVideocamOff, IoVideocam, IoShare } from 'react-icons/io5';
-
+import Peer, { DataConnection, PeerJSOption } from 'peerjs';
+import { Box, IconButton, Stack, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerOverlay, useDisclosure } from '@chakra-ui/react';
+import { IoCall, IoMicOff, IoMic, IoVideocamOff, IoVideocam, IoShare, IoPaperPlane } from 'react-icons/io5';
+import Chat from './TextChat'; // import the Chat component
 
 interface VideoCallProps {
   callId: string;
@@ -33,6 +33,13 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
   const [screenSharingActive, setScreenSharingActive] = useState(false);
   const screenStreamRef = useRef<MediaStream | null>(null);
   let callRef: any = useRef();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const dataConnectionRef = useRef<DataConnection | null>(null);
+
+  const [messages, setMessages] = useState<any[]>([]);
+  const handleSendMessage = (message: string) => {
+    dataConnectionRef.current?.send(message);
+  };
 
   const handleToggleAudio = () => {
     const enabled = !audioEnabled;
@@ -132,6 +139,20 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
       }
     };
 
+    // Set up data connection
+    peer.on('connection', (conn) => {
+      dataConnectionRef.current = conn;
+      
+      conn.on('data', (data) => {
+        setMessages(prevMessages => [...prevMessages, data]);
+      });
+
+      conn.on('open', () => {
+        // The data connection is now open, we can start the chat
+        console.log('Data connection opened');
+      });
+    });
+
     const handleCall = (call: any) => {
       callRef = call; // keep a reference to the call
       setupStream().then((stream) => {
@@ -183,6 +204,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
     return () => {
       window.removeEventListener('popstate', handlePopstate);
       window.removeEventListener('beforeunload', handleBeforeUnload);
+      dataConnectionRef.current?.close();
       if (streamRef.current) {
         streamRef.current.getTracks().forEach(track => track.stop());
       }
@@ -220,8 +242,24 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
             colorScheme="red"
             onClick={handleEndCall}
           />
+          <IconButton
+            aria-label="Toggle chat"
+            icon={<IoPaperPlane />}
+            onClick={onOpen}
+          />
         </Stack>
       </Box>
+
+      <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerBody>
+              <Chat user={user} callId={callId} messages={messages} onSendMessage={handleSendMessage} />
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
     </div>
   );
 };
