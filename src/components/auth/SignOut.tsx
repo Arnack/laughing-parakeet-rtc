@@ -2,10 +2,12 @@ import { auth } from "@/service/firebase/firebaseConfig";
 import { signOut } from "firebase/auth";
 import { Icon } from '@chakra-ui/react'
 import { MdLogout } from 'react-icons/md'
+import LS from "@/service/storage/LS";
 
 const SignOut = () => {
   const handleSignOut = async () => {
     try {
+      LS.removeUserInfo();
       await signOut(auth);
     } catch (error) {
       console.error(error);

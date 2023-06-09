@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "./service/firebase/firebaseConfig";
+import LS from "./service/storage/LS";
 
 
 interface AuthContextData {
@@ -17,11 +18,13 @@ export const useAuth = () => useContext(AuthContext);
 
 // @ts-ignore
 export const AuthProvider: React.FC = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  let lsUser = LS.getUserInfo();
+  const [user, setUser] = useState<User | null>(lsUser.user);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
+      LS.setUserInfo(user);
       setUser(user);
       setLoading(false);
     });
