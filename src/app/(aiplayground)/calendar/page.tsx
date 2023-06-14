@@ -10,7 +10,6 @@ const Calendar = () => {
   const [events, setEvents] = useState<any[]>([]);
   const [businessHours, setBusinessHours] = useState<any[]>([]);
 
-  
   // Example event
   useEffect(() => {
     setEvents([
@@ -96,10 +95,6 @@ const Calendar = () => {
             select={handleSelect}
             eventClick={handleEventClick}
             businessHours={businessHours}
-            // headerToolbar={{
-            //   start: "today prev next",
-            //   end: "dayGridMonth dayGridWeek dayGridDay",
-            // }}
             />
     </Box>
   );

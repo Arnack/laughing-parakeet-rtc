@@ -2,6 +2,8 @@
 
 import { Box } from "@chakra-ui/react";
 import { useAuth } from "@/authContext";
+// import VideoRoomComponent from "@/components/call/components/VideoRoomComponent";
+// import VideoRoomComponent from "../../components/call/components/VideoRoomComponent";
 import Link from "next/link";
 
 const CallPage = () => {
@@ -13,6 +15,7 @@ const CallPage = () => {
       <Link href={`/call/${user?.uid}`}>
         Call
       </Link>
+      {/* <VideoRoomComponent /> */}
     </Box>
   );
 };
