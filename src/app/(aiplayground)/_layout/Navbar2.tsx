@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from "@/authContext";
+import { useAuth } from "@/authContext"; 
 import { Avatar } from '@chakra-ui/react'
 import SignIn from "@/components/auth/SignIn";
 import SignOut from "@/components/auth/SignOut";

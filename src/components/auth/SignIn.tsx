@@ -3,7 +3,6 @@ import { useState } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/service/firebase/firebaseConfig";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { Icon } from '@chakra-ui/react'
 import { IoLogoGoogle } from 'react-icons/io5'
 
 const SignIn = () => {
