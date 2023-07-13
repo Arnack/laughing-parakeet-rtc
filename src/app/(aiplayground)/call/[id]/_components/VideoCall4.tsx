@@ -1,10 +1,18 @@
 'use client'
 
+import axios from 'axios';
 import { useEffect, useState, useRef } from 'react';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
 import { Box, IconButton, Stack, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerOverlay, useDisclosure } from '@chakra-ui/react';
-import { IoCall, IoMicOff, IoMic, IoVideocamOff, IoVideocam, IoShare, IoPaperPlane } from 'react-icons/io5';
+import { IoCall, IoMicOff, IoMic, IoVideocamOff, IoVideocam, IoShare, IoPaperPlane, IoApps, IoCreate, IoLanguage, IoText } from 'react-icons/io5';
 import Chat from './TextChat'; // import the Chat component
+
+// @ts-ignore
+var SpeechRecognition = window?.SpeechRecognition || window?.webkitSpeechRecognition;
+var recognition = new SpeechRecognition();
+recognition.lang = 'en-US';
+recognition.interimResults = true;
+recognition.continuous = true;
 
 interface VideoCallProps {
   callId: string;
@@ -35,6 +43,13 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
   let callRef: any = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dataConnectionRef = useRef<DataConnection | null>(null);
+
+  const [currentTranscript, setCurrentTranscript] = useState("");
+  const [currentTranslated, setCurrentTranslated] = useState("");
+
+  const [showCurrentTranscript, setShowCurrentTranscript] = useState(false);
+  const [showCurrentTranslated, setShowCurrentTranslated] = useState(false);
+
 
   const [messages, setMessages] = useState<any[]>([]);
   const handleSendMessage = (message: string) => {
@@ -108,6 +123,79 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
       call.on('close', handleClose);
     }
 
+    // const setupStream = async () => {
+    //   try {
+    //     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    //     if (myVideo.current) {
+    //       myVideo.current.srcObject = stream;
+    //     }
+    //     streamRef.current = stream; // <-- update the ref
+    //     return stream;
+    //   } catch (error) {
+    //     console.error('Error setting up stream: ', error);
+    //     return undefined;
+    //   }
+    // };
+
+
+    recognition.onstart = function () {
+      console.log('Voice recognition started.>>>>>');
+    }
+
+    recognition.onspeechend = function () {
+      console.log('You were quiet for a while so voice recognition turned itself off.>>>>');
+    }
+
+    recognition.onerror = function (event: any) {
+      if (event.error == 'no-speech') {
+        console.log('No speech was detected. Try again.>>>>');
+      }
+    }
+
+    recognition.onsoundend = function () {
+      console.log('>>>>>Sound has ended.');
+    }
+
+    let finalTranscript = '';
+    let interimTranscript = '';
+    let lastResultIndex = 0;
+
+    recognition.onresult = async function (event: any) {
+      interimTranscript = '';
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          finalTranscript += event.results[i][0].transcript;
+          lastResultIndex = event.resultIndex + 1;
+        } else {
+          interimTranscript += event.results[i][0].transcript;
+        }
+      }
+
+      console.log('Final: ', finalTranscript);
+      console.log('Interim: ', interimTranscript);
+
+      if (showCurrentTranslated) {
+        // Sending a request to Google Translate API
+        const response = await axios.post(
+          `https://translation.googleapis.com/language/translate/v2?key=${process.env.NEXT_PUBLIC_API_KEY}`,
+          {
+            q: interimTranscript,
+            source: 'en',
+            target: 'ru',
+          }
+        );
+        const translation = response.data.data.translations[0].translatedText;
+        console.log(`Translation: ${translation}`);
+        setCurrentTranslated(prevTranslation => translation && translation.length > 0 ? translation : prevTranslation);
+      }
+
+      setCurrentTranscript(prevTranscript => interimTranscript && interimTranscript.length > 0 ? interimTranscript : prevTranscript);
+
+    }
+
+
+
+
     const setupStream = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -115,6 +203,8 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
           myVideo.current.srcObject = stream;
         }
         streamRef.current = stream; // <-- update the ref
+        console.log('recognition>>>>>>', recognition);
+        recognition.start(); // <-- start speech recognition after stream is available
         return stream;
       } catch (error) {
         console.error('Error setting up stream: ', error);
@@ -142,7 +232,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
     // Set up data connection
     peer.on('connection', (conn) => {
       dataConnectionRef.current = conn;
-      
+
       conn.on('data', (data) => {
         setMessages(prevMessages => [...prevMessages, data]);
       });
@@ -202,6 +292,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
 
     // Cleanup function
     return () => {
+      recognition.stop();
       window.removeEventListener('popstate', handlePopstate);
       window.removeEventListener('beforeunload', handleBeforeUnload);
       dataConnectionRef.current?.close();
@@ -213,12 +304,43 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
 
   }, []);
 
-  
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrentTranscript("");
+    }, 2400); // Clear after 5 seconds
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [currentTranscript]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrentTranslated("");
+    }, 2400); // Clear after 5 seconds
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [currentTranslated]);
 
   return (
     <div>
       <video ref={myVideo} autoPlay muted />
       <video ref={peerVideo} autoPlay />
+      {showCurrentTranscript && currentTranscript?.length &&
+      <Box position="fixed" bottom={showCurrentTranslated ? "160px" : "80px"}
+          width="100%" p="4" bg="gray.800" color="white" textAlign="center">
+        <p>{currentTranscript}</p>
+      </Box>}
+
+      {showCurrentTranslated && currentTranslated?.length &&
+      <Box position="fixed" bottom="80px"
+      width="100%" p="4" bg="gray.800" color="white" textAlign="center">
+        <p>{currentTranslated}</p>
+      </Box>}
+
       <Box position="fixed" bottom="0" width="100%" p="4" bg="gray.800" color="white">
         <Stack direction="row" spacing="4" justify="center">
           <IconButton
@@ -235,6 +357,28 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
             aria-label="Toggle screen sharing"
             icon={screenSharingActive ? <IoShare /> : <IoShare />}
             onClick={handleToggleScreenSharing}
+          />
+          <IconButton
+            aria-label="Toggle screen sharing"
+            icon={<IoApps />}
+            onClick={handleToggleScreenSharing}
+          />
+          <IconButton
+            aria-label="Toggle screen sharing"
+            icon={<IoCreate />}
+            onClick={handleToggleScreenSharing}
+          />
+          <IconButton
+            aria-label="Toggle caption"
+            icon={<IoText />}
+            onClick={() => setShowCurrentTranscript(!showCurrentTranscript)}
+            colorScheme={showCurrentTranscript ? "teal" : "gray"}
+          />
+          <IconButton
+            aria-label="Toggle translation"
+            icon={<IoLanguage />}
+            onClick={() => setShowCurrentTranslated(!showCurrentTranslated)}
+            colorScheme={showCurrentTranslated ? "teal" : "gray"}
           />
           <IconButton
             aria-label="End call"

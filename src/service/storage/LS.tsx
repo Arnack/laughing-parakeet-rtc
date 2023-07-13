@@ -6,7 +6,7 @@ class LS {
     }
     
     static getUserInfo() {
-        const user = JSON.parse(localStorage.getItem('lpr64_user') || 'null');
+        const user = JSON.parse(localStorage?.getItem('lpr64_user') || 'null');
         return { user };
     }
     

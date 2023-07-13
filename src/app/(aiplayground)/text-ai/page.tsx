@@ -166,7 +166,7 @@ const Test = () => {
         saveToHistory({ message, response: data?.choices[0]?.message?.content });
     };
 
-    const handleStreamingChatCompletion = async () => {
+    const handleStreamingChatCompletion = async (is4 = false) => {
         setLoading(true);
         setResponse("");
         let stringResponse = "";
@@ -177,7 +177,7 @@ const Test = () => {
             "Authorization": "Bearer " + process.env.NEXT_PUBLIC_OPENAI_KEY,
           },
           body: JSON.stringify({
-            model: "gpt-3.5-turbo",
+            model: is4 ? "gpt-4-0314" : "gpt-3.5-turbo",
             messages: [{ role: "user", content: message }],
             temperature: temperature,
             stream: true,
@@ -281,7 +281,8 @@ const Test = () => {
             <HStack spacing={4}>
               {/* <Button isDisabled={loading} onClick={handleSentMessegeToOpenAI}>Send to Davinci</Button> */}
               {/* <Button isDisabled={loading} onClick={handleSentMessageToChatGPT}>Send to ChatGPT</Button> */}
-              <Button isDisabled={loading} onClick={handleStreamingChatCompletion}>Ask ChatGPT</Button>
+              <Button isDisabled={loading} onClick={() => handleStreamingChatCompletion(false)}>Ask ChatGPT 3.5</Button>
+              <Button isDisabled={loading} onClick={() => handleStreamingChatCompletion(true)}>Ask ChatGPT 4</Button>
 
               {/* <Button onClick={handleSentMessageToChatGPT4} disabled={true}>Send to ChatGPT4</Button> */}
             </HStack>

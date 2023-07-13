@@ -98,7 +98,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
 
   return (
     <div>
-      <video ref={myVideo} autoPlay muted />
+      {/* <video ref={myVideo} autoPlay muted />
       <video ref={peerVideo} autoPlay />
       <Box position="fixed" bottom="0" width="100%" p="4" bg="gray.800" color="white">
         <Stack direction="row" spacing="4" justify="center">
@@ -140,7 +140,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
             </DrawerBody>
           </DrawerContent>
         </DrawerOverlay>
-      </Drawer>
+      </Drawer> */}
     </div>
   );
 };
