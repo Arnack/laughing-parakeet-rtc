@@ -2,7 +2,7 @@
 
 class LS {
     static setUserInfo(user: any) {
-        localStorage.setItem('lpr64_user', JSON.stringify(user));
+        localStorage?.setItem('lpr64_user', JSON.stringify(user));
     }
     
     static getUserInfo() {
@@ -11,7 +11,7 @@ class LS {
     }
     
     static removeUserInfo() {
-        localStorage.removeItem('lpr64_user');
+        localStorage?.removeItem('lpr64_user');
     }
 }
 

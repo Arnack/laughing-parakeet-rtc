@@ -4,8 +4,9 @@ import axios from 'axios';
 import { useEffect, useState, useRef } from 'react';
 import Peer, { DataConnection, PeerJSOption } from 'peerjs';
 import { Box, IconButton, Stack, Drawer, DrawerBody, DrawerCloseButton, DrawerContent, DrawerOverlay, useDisclosure } from '@chakra-ui/react';
-import { IoCall, IoMicOff, IoMic, IoVideocamOff, IoVideocam, IoShare, IoPaperPlane, IoApps, IoCreate, IoLanguage, IoText } from 'react-icons/io5';
+import { IoCall, IoMicOff, IoMic, IoVideocamOff, IoVideocam, IoShare, IoPaperPlane, IoApps, IoCreate, IoLanguage, IoText, IoRecording } from 'react-icons/io5';
 import Chat from './TextChat'; // import the Chat component
+import AIPanel from './AIPanel';
 
 // @ts-ignore
 var SpeechRecognition = window?.SpeechRecognition || window?.webkitSpeechRecognition;
@@ -42,6 +43,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
   const screenStreamRef = useRef<MediaStream | null>(null);
   let callRef: any = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isOpenAI, onOpen: onOpenAI, onClose: onCloseAI } = useDisclosure();
   const dataConnectionRef = useRef<DataConnection | null>(null);
 
   const [currentTranscript, setCurrentTranscript] = useState("");
@@ -49,6 +51,8 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
 
   const [showCurrentTranscript, setShowCurrentTranscript] = useState(false);
   const [showCurrentTranslated, setShowCurrentTranslated] = useState(false);
+
+  const [finalText, setFinalText] = useState("");
 
 
   const [messages, setMessages] = useState<any[]>([]);
@@ -172,9 +176,12 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
       }
 
       console.log('Final: ', finalTranscript);
+
+      setFinalText(finalTranscript);
+
       console.log('Interim: ', interimTranscript);
 
-      if (showCurrentTranslated) {
+      if (showCurrentTranslated || true) {
         // Sending a request to Google Translate API
         const response = await axios.post(
           `https://translation.googleapis.com/language/translate/v2?key=${process.env.NEXT_PUBLIC_API_KEY}`,
@@ -354,6 +361,11 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
             onClick={handleToggleVideo}
           />
           <IconButton
+            aria-label="Toggle recording"
+            icon={<IoRecording />}
+            // onClick={handleToggleVideo}
+          />
+          <IconButton
             aria-label="Toggle screen sharing"
             icon={screenSharingActive ? <IoShare /> : <IoShare />}
             onClick={handleToggleScreenSharing}
@@ -361,7 +373,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
           <IconButton
             aria-label="Toggle screen sharing"
             icon={<IoApps />}
-            onClick={handleToggleScreenSharing}
+            onClick={onOpenAI}
           />
           <IconButton
             aria-label="Toggle screen sharing"
@@ -400,6 +412,17 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
             <DrawerCloseButton />
             <DrawerBody>
               <Chat user={user} callId={callId} messages={messages} onSendMessage={handleSendMessage} />
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
+
+      <Drawer isOpen={isOpenAI} placement="right" onClose={onCloseAI}>
+        <DrawerOverlay>
+          <DrawerContent>
+            <DrawerCloseButton />
+            <DrawerBody>
+              <AIPanel sessionText={finalText} />
             </DrawerBody>
           </DrawerContent>
         </DrawerOverlay>
