@@ -2,16 +2,25 @@
 
 class LS {
     static setUserInfo(user: any) {
-        localStorage?.setItem('lpr64_user', JSON.stringify(user));
+        if (typeof window !== 'undefined') {
+            localStorage?.setItem('lpr64_user', JSON.stringify(user));
+        }
     }
-    
+
     static getUserInfo() {
-        const user = JSON.parse(localStorage?.getItem('lpr64_user') || 'null');
-        return { user };
+        if (typeof window !== 'undefined') {
+            const user = JSON.parse(localStorage?.getItem('lpr64_user') || 'null');
+            return { user };
+        }
+        else {
+            return { user: {} };
+        }
     }
-    
+
     static removeUserInfo() {
-        localStorage?.removeItem('lpr64_user');
+        if (typeof window !== 'undefined') {
+            localStorage?.removeItem('lpr64_user');
+        }
     }
 }
 
