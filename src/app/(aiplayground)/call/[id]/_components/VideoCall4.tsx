@@ -330,8 +330,13 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
 
   return (
     <div>
-      <video ref={myVideo} autoPlay muted />
-      <video ref={peerVideo} autoPlay />
+      <video style={{ width: '48%', float: 'left', margin: '4px' }}
+        ref={myVideo} autoPlay
+        muted
+      />
+      <video style={{ width: '48%', float: 'left', margin: '4px' }}
+        ref={peerVideo} autoPlay
+      />
       {showCurrentTranscript && currentTranscript?.length &&
       <Box position="fixed" bottom={showCurrentTranslated ? "160px" : "80px"}
           width="100%" p="4" bg="gray.800" color="white" textAlign="center">

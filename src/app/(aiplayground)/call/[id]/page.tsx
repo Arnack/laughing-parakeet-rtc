@@ -8,7 +8,14 @@ import { useAuth } from "@/authContext";
 const CallPage = () => {
 
   const callId = location.pathname.split("/")[2];
-  const { user } = useAuth();
+  let { user } = useAuth();
+
+  if (!user || !user.uid) {
+    // @ts-ignore
+    user = {
+      uid: 'anonymousguestusver',
+    }
+  }
 
   console.log('callpage user>>>', user);
   
