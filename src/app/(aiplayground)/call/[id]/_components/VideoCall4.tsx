@@ -127,37 +127,23 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
       call.on('close', handleClose);
     }
 
-    // const setupStream = async () => {
-    //   try {
-    //     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    //     if (myVideo.current) {
-    //       myVideo.current.srcObject = stream;
-    //     }
-    //     streamRef.current = stream; // <-- update the ref
-    //     return stream;
-    //   } catch (error) {
-    //     console.error('Error setting up stream: ', error);
-    //     return undefined;
-    //   }
-    // };
-
 
     recognition.onstart = function () {
-      console.log('Voice recognition started.>>>>>');
+      // console.log('Voice recognition started.>>>>>');
     }
 
     recognition.onspeechend = function () {
-      console.log('You were quiet for a while so voice recognition turned itself off.>>>>');
+      // console.log('You were quiet for a while so voice recognition turned itself off.>>>>');
     }
 
     recognition.onerror = function (event: any) {
       if (event.error == 'no-speech') {
-        console.log('No speech was detected. Try again.>>>>');
+        // console.log('No speech was detected. Try again.>>>>');
       }
     }
 
     recognition.onsoundend = function () {
-      console.log('>>>>>Sound has ended.');
+      // console.log('>>>>>Sound has ended.');
     }
 
     let finalTranscript = '';
@@ -175,11 +161,11 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
         }
       }
 
-      console.log('Final: ', finalTranscript);
+      // console.log('Final: ', finalTranscript);
 
       setFinalText(finalTranscript);
 
-      console.log('Interim: ', interimTranscript);
+      // console.log('Interim: ', interimTranscript);
 
       if (showCurrentTranslated || true) {
         // Sending a request to Google Translate API
@@ -192,16 +178,13 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
           }
         );
         const translation = response.data.data.translations[0].translatedText;
-        console.log(`Translation: ${translation}`);
+        // console.log(`Translation: ${translation}`);
         setCurrentTranslated(prevTranslation => translation && translation.length > 0 ? translation : prevTranslation);
       }
 
       setCurrentTranscript(prevTranscript => interimTranscript && interimTranscript.length > 0 ? interimTranscript : prevTranscript);
 
     }
-
-
-
 
     const setupStream = async () => {
       try {
@@ -210,7 +193,6 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
           myVideo.current.srcObject = stream;
         }
         streamRef.current = stream; // <-- update the ref
-        console.log('recognition>>>>>>', recognition);
         recognition.start(); // <-- start speech recognition after stream is available
         return stream;
       } catch (error) {
@@ -230,6 +212,15 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
           // Handle error: unable to establish call
           console.error('Unable to establish call');
         }
+
+        // peerjs data connection
+        const conn = peer.connect(callId);
+        dataConnectionRef.current = conn;
+
+        conn.on("open", () => {
+          conn.send("hi! world of connections>>>>");
+        });
+
       } else {
         // Handle error: unable to acquire user media
         console.error('Unable to acquire user media');
@@ -239,6 +230,9 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
     // Set up data connection
     peer.on('connection', (conn) => {
       dataConnectionRef.current = conn;
+      
+      console.log('Data connection established on recieved >>>>');
+      
 
       conn.on('data', (data) => {
         setMessages(prevMessages => [...prevMessages, data]);
@@ -252,6 +246,8 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
 
     const handleCall = (call: any) => {
       callRef = call; // keep a reference to the call
+      console.log('Call handleCall>>>', call);
+      
       setupStream().then((stream) => {
         if (stream) {
           call.answer(stream);
@@ -290,7 +286,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
     });
 
     peer.on('error', (err: PeerJSError) => {
-      console.error('Peer error: ', err);
+      console.error('Peer error:>>> ', err);
       if (err?.type === 'network') {
         console.log('Network error, reconnecting...');
         peer.reconnect();
