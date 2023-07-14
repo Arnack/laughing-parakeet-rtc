@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { Box, VStack, Textarea, HStack, IconButton, Text } from '@chakra-ui/react';
+import { Box, VStack, Textarea, Input, HStack, IconButton, Text } from '@chakra-ui/react';
 import { IoPaperPlane } from 'react-icons/io5';
 
 interface ChatProps {
@@ -38,12 +38,20 @@ const Chat = ({ user, callId, messages, onSendMessage }: ChatProps) => {
           </Box>
         ))}
       </VStack>
-      <HStack mt="4">
-        <Textarea
-          value={messageInput}
-          onChange={(e) => setMessageInput(e.target.value)}
-          placeholder="Type your message here..."
-        />
+      <HStack mt="4" style={{
+        position: 'absolute',
+        bottom: '12px',
+      }}>
+      {/* <Textarea
+        value={messageInput}
+        onChange={(e) => setMessageInput(e.target.value)}
+        placeholder="Type your message here..."
+      /> */}
+      <Input
+        value={messageInput}
+        onChange={(e) => setMessageInput(e.target.value)}
+        placeholder="Type your message here..."
+      />
         <IconButton
           aria-label="Send message"
           icon={<IoPaperPlane />}

@@ -337,13 +337,13 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
       <video style={{ width: '48%', float: 'left', margin: '4px' }}
         ref={peerVideo} autoPlay
       />
-      {showCurrentTranscript && currentTranscript?.length &&
-      <Box position="fixed" bottom={showCurrentTranslated ? "160px" : "80px"}
+      {showCurrentTranscript && currentTranscript?.length !== 0 &&
+      <Box position="fixed" bottom={showCurrentTranslated ? "140px" : "80px"}
           width="100%" p="4" bg="gray.800" color="white" textAlign="center">
-        <p>{currentTranscript}</p>
+        <p style={{background: "trasparent"}}>{currentTranscript}</p>
       </Box>}
 
-      {showCurrentTranslated && currentTranslated?.length &&
+      {showCurrentTranslated && currentTranslated?.length !== 0 &&
       <Box position="fixed" bottom="80px"
       width="100%" p="4" bg="gray.800" color="white" textAlign="center">
         <p>{currentTranslated}</p>

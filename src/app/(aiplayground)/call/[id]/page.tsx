@@ -10,15 +10,12 @@ const CallPage = () => {
   const callId = location.pathname.split("/")[2];
   let { user } = useAuth();
 
-  if (!user || !user.uid) {
+  if (!user || !user.uid) { // TODO remove it. It was added only for sesting purpuses
     // @ts-ignore
     user = {
       uid: 'anonymousguestusver',
     }
   }
-
-  console.log('callpage user>>>', user);
-  
   
   return (
     <Box>
