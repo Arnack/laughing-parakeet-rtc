@@ -3,7 +3,7 @@
 import './globals.css'
 
 export const metadata = {
-  title: 'ConsultMe',  // WisdomHub | Guidely | ExpertEase | AdviceArena | MentorMatch
+  title: 'Wisely',  // WisdomHub | Guidely | ExpertEase | AdviceArena | MentorMatch
                        // Conexa | AskPro/Me | ExperTip + | Wisely | InSight
                        // ConsultMe/Hub | MentorMe | 
 

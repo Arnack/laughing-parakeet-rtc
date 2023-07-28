@@ -17,7 +17,7 @@ const Header = ({ headerStyle }) => {
 
     const { user } = useAuth();
     return (
-        <div style={{ height: "77px" }}>
+        <div style={{ height: "74px" }}>
             <header className={`${headerStyle} header sticky-bar stick `}>
                 <div className="container">
                     <div className="main-header">

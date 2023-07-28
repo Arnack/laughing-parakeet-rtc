@@ -25,6 +25,8 @@ import {
 
 const Navbar = () => {
     const { user } = useAuth();
+
+    console.log('user>>>', user);
     
     const { isOpen, onOpen, onClose } = useDisclosure();
   
@@ -58,8 +60,9 @@ const Navbar = () => {
             {
               user && (
                 <Link className={styles.navLink} href="/profile">
+                  {user.photoURL}
                   {
-                    user.photoURL ? (
+                    user?.photoURL ? (
                       <Avatar size='xs' name={user.displayName || undefined} src={user.photoURL} />
                     ) : (
                       user.displayName

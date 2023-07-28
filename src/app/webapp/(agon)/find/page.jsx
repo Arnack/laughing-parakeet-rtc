@@ -34,78 +34,68 @@ function ShopFrid1() {
             <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
               <div className="category-grid-3 hover-up">
                 <div className="category-img">
-                  <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
+                  <Link href="/webapp/find/language" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
                 </div>
                 <h4 className="text-heading-5 mb-5">Language</h4>
                 {/* <p className="text-body-text color-gray-500">1253 pros</p> */}
               </div>
             </div>
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+            {/* <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
               <div className="category-grid-3 hover-up">
                 <div className="category-img">
                   <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
                 </div>
                 <h4 className="text-heading-5 mb-5">Legal</h4>
-                {/* <p className="text-body-text color-gray-500">453</p> */}
               </div>
-            </div>
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+            </div> */}
+            {/* <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
               <div className="category-grid-3 hover-up">
                 <div className="category-img">
                   <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
                 </div>
                 <h4 className="text-heading-5 mb-5">Wellness</h4>
-                {/* <p className="text-body-text color-gray-500">7653 products</p> */}
               </div>
-            </div>
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+            </div> */}
+            {/* <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
               <div className="category-grid-3 hover-up">
                 <div className="category-img">
                   <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
                 </div>
                 <h4 className="text-heading-5 mb-5">Business</h4>
               </div>
-            </div>
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+            </div> */}
+            {/* <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
               <div className="category-grid-3 hover-up">
                 <div className="category-img">
                   <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
                 </div>
                 <h4 className="text-heading-5 mb-5">Career</h4>
               </div>
-            </div>
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+            </div> */}
+            {/* <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
               <div className="category-grid-3 hover-up">
                 <div className="category-img">
                   <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
                 </div>
                 <h4 className="text-heading-5 mb-5">Finance</h4>
               </div>
-            </div>
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+            </div> */}
+            {/* <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
               <div className="category-grid-3 hover-up">
                 <div className="category-img">
                   <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/tablet.svg" alt="" /></a></Link>
                 </div>
                 <h4 className="text-heading-5 mb-5">IT</h4>
               </div>
-            </div>
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
+            </div> */}
+            {/* <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
               <div className="category-grid-3 hover-up">
                 <div className="category-img">
                   <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
                 </div>
                 <h4 className="text-heading-5 mb-5">Lifestyle</h4>
               </div>
-            </div>
-            <div className="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12">
-              <div className="category-grid-3 hover-up">
-                <div className="category-img">
-                  <Link href="#" legacyBehavior><a><img src="/assets/imgs/page/shop1/book.svg" alt="" /></a></Link>
-                </div>
-                <h4 className="text-heading-5 mb-5">Home & family</h4>
-              </div>
-            </div>
+            </div> */}
             
           </div>
         </div>
