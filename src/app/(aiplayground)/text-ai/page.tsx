@@ -215,16 +215,21 @@ const Test = () => {
               } catch (error) {
                 console.error("Error parsing JSON data:", error);
 
-                const contentRegex = /"delta":{.*?"content":"(.*?)"}/;
-                const contentMatch = contentRegex.exec(completeJsonData);
-                if (contentMatch) {
-                    const usefulContent = contentMatch[1];
-                    
-                    setResponse((prev) => prev + usefulContent);
-                    stringResponse += usefulContent;
+                const contentRegex = /"delta":{.*?"content":"(.*?)"}/g;
+                // @ts-ignore
+                const contentMatches = [...completeJsonData.matchAll(contentRegex)];
+
+                if (contentMatches.length > 0) {
+                    for (let contentMatch of contentMatches) {
+                        const usefulContent = contentMatch[1];
+
+                        setResponse((prev) => prev + usefulContent);
+                        stringResponse += usefulContent;
+                    }
                 } else {
                     console.error("Unable to extract content using regex");
                 }
+
               }
             }
           }
@@ -239,7 +244,7 @@ const Test = () => {
     
     return (
         <Container>
-        <Box>
+        {/* <Box> */}
             <Heading as="h1" mb={4}>
                 Try open AI text model
             </Heading>
@@ -353,7 +358,7 @@ const Test = () => {
                 </ModalContent>
                 </Modal>
           </VStack>
-        </Box>
+        {/* </Box> */}
         </Container>
       );
     };

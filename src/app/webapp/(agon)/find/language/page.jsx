@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { Typeahead } from 'react-bootstrap-typeahead';
 import { collection, query, where, getDocs } from "firebase/firestore";
 import db from '@/service/firebase/firebaseConfig';
 import styles from './_style.module.scss';
 import ConsultantItem from './_components/ConsultantItem';
-import DoubleRangeInput from './_components/doubleRange/DoubleRangeInput';
+import AutoComplete from './_components/autocomplete/AutoComplete';
 
 
 const FindLangTutor = () => {
@@ -30,12 +29,24 @@ const FindLangTutor = () => {
   };
 
   const searchUsers = async () => {
+    // const usersCol = collection(db, 'users');
+    // const q = query(usersCol, where('rates', '>=', priceRange.min));
+
+    // const querySnapshot = await getDocs(q);
+    // let usersList = [];
+    // querySnapshot.forEach((doc) => {
+    //   let user = doc.data();
+    //   // if (user.language.split(", ").includes(language.toLocaleLowerCase) || true) {
+    //     usersList.push(user);
+    //   // }
+    // });
+    // console.log('usersList>>>', usersList);
+    // setUsers(usersList);
+
+
+
     const usersCol = collection(db, 'users');
-    const q = query(usersCol, 
-      where('description', '>=', searchText), where('description', '<=', searchText + '\uf8ff'), 
-      where('language', '==', language),
-      where('price', '>=', priceRange.min),
-      where('price', '<=', priceRange.max));
+    const q = query(usersCol, where('description', '>=', searchText), where('description', '<=', searchText + '\uf8ff'));
     const querySnapshot = await getDocs(q);
     let usersList = [];
     querySnapshot.forEach((doc) => {
@@ -63,21 +74,66 @@ const FindLangTutor = () => {
           <div className="row mb-4">
             <div className="col-lg-12">
               <div className="input-group">
-                <input type="text" className={`form-control ${styles['search-input']}`} placeholder="Enter text..." value={searchText} onChange={handleSearchChange} />
-                <Typeahead
-                  id="language-typeahead"
-                  labelKey="language"
-                  onChange={handleLanguageChange}
-                  options={languages}
-                  placeholder="Choose a language..."
-                  selected={language ? [language] : []}
+                <input
+                  type="text"
+                  className={`form-control`}
+                  placeholder="Search by keywords"
+                  value={searchText}
+                  onChange={handleSearchChange}
+                  style={{
+                    width: '20%',
+                    float: 'left',
+                    padding: '0px 10px',
+                    backgroundColor: '#ffffff',
+                    color: '#000000',
+                    border: '1px solid #ced4da',
+                  }}
                 />
-                <input type="number" className='form-control' min="0" value={priceRange.min} onChange={handlePriceChange('min')} />
-                <input type="number" className='form-control' min="0" value={priceRange.max} onChange={handlePriceChange('max')} />
-    
-                <button className={`btn btn-green-900`}
+                <AutoComplete
+                  options={languages}
+                  onOptionSelect={setLanguage}
+                />
+                <input
+                  type="number"
+                  min="0"
+                  placeholder='Min Price'
+                  value={priceRange.min}
+                  onChange={handlePriceChange('min')}
+                  style={{
+                    width: '20%',
+                    float: 'left',
+                    padding: '0px 10px',
+                    backgroundColor: '#ffffff',
+                    color: '#000000',
+                    border: '1px solid #ced4da',
+                    height: '60px',
+                  }}
+                />
+                <input
+                  type="number"
+                  min="0"
+                  placeholder='Max Price'
+                  value={priceRange.max}
+                  onChange={handlePriceChange('max')}
+                  style={{
+                    width: '20%',
+                    float: 'left',
+                    padding: '0px 10px',
+                    backgroundColor: '#ffffff',
+                    color: '#000000',
+                    border: '1px solid #ced4da',
+                    height: '60px',
+                  }}
+                />
+                <button
+                  className={`btn btn-green-900 ${styles['search-button']}`}
                   onClick={searchUsers}
-                  style={{ padding: '0px 22px' }}
+                  style={{
+                    padding: '0px 22px',
+                    'border-top-right-radius': '0px',
+                    'border-bottom-right-radius': '0px',
+                    height: '60px',
+                  }}
                 >
                   Search
                 </button>

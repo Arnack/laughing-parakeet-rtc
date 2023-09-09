@@ -67,7 +67,7 @@ interface IMessage {
   
     return (
       <Container>
-        {/* <Box>
+        <Box>
           <Heading as="h1" mb={4}>
             История запросов
           </Heading>
@@ -108,7 +108,7 @@ interface IMessage {
               </ListItem>
             ))}
           </UnorderedList>
-        </Box> */}
+        </Box>
       </Container>
     );
   };

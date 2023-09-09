@@ -10,7 +10,9 @@ import AIPanel from './AIPanel';
 
 // @ts-ignore
 var SpeechRecognition = window?.SpeechRecognition || window?.webkitSpeechRecognition;
-var recognition = new SpeechRecognition();
+console.log('SpeechRecognition>>>>', SpeechRecognition);
+
+var recognition = SpeechRecognition ? new SpeechRecognition() : {};
 recognition.lang = 'en-US';
 recognition.interimResults = true;
 recognition.continuous = true;
@@ -193,7 +195,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
           myVideo.current.srcObject = stream;
         }
         streamRef.current = stream; // <-- update the ref
-        recognition.start(); // <-- start speech recognition after stream is available
+        recognition?.start(); // <-- start speech recognition after stream is available
         return stream;
       } catch (error) {
         console.error('Error setting up stream: ', error);
@@ -295,7 +297,7 @@ const VideoCall = ({ user, callId }: VideoCallProps) => {
 
     // Cleanup function
     return () => {
-      recognition.stop();
+      recognition?.stop();
       window.removeEventListener('popstate', handlePopstate);
       window.removeEventListener('beforeunload', handleBeforeUnload);
       dataConnectionRef.current?.close();

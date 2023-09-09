@@ -60,7 +60,6 @@ const Navbar = () => {
             {
               user && (
                 <Link className={styles.navLink} href="/profile">
-                  {user.photoURL}
                   {
                     user?.photoURL ? (
                       <Avatar size='xs' name={user.displayName || undefined} src={user.photoURL} />
